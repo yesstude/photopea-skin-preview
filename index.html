@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Photopea Skin Preview</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='style.css'>
+    <script src='skinview3d.bundle.js'></script>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+</head>
+
+<body>
+    <canvas id="skin_container"></canvas>
+    <script>
+        let skinViewer = new skinview3d.SkinViewer({
+            canvas: document.getElementById("skin_container"),
+            width: 200,
+            height: 300,
+            skin: "/steve.png",
+            fov: 10,
+
+        });
+        setInterval(() => {
+            window.parent.postMessage(`
+            app.activeDocument.saveToOE("png");`, "*");
+        }, 100);
+        window.addEventListener("message", e => {
+            var base64String = btoa(String.fromCharCode.apply(null, new Uint8Array(e.data)));
+            skinViewer.loadSkin(`data:image/png;base64,${base64String}`);
+        });
+    </script>
+</body>
+
+</html>
